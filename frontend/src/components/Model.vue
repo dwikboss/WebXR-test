@@ -18,7 +18,7 @@ export default defineComponent({
         const scene = new THREE.Scene();
         const canvasRef = this.$refs.canvasRef;
 
-        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 100) as PerspectiveCamera;
+        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 100) as any;
         camera.position.y = 1;
         camera.position.z = 2;
         camera.lookAt(new THREE.Vector3(0, 0, 0));
@@ -27,7 +27,7 @@ export default defineComponent({
             canvas: canvasRef as HTMLCanvasElement,
             antialias: true,
             alpha: true
-        }) as WebGLRenderer;
+        }) as any;
 
         (document.body.appendChild(ARButton.createButton(renderer) as any));
 
