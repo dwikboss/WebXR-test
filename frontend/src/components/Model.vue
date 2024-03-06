@@ -18,24 +18,35 @@ export default defineComponent({
         const scene = new THREE.Scene();
         const canvasRef = this.$refs.canvasRef;
 
-        const camera = new THREE.PerspectiveCamera(75, canvasRef.clientWidth / canvasRef.clientHeight, 0.1, 1000);
+        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 100);
+        camera.position.y = 1;
         camera.position.z = 2;
         camera.lookAt(new THREE.Vector3(0, 0, 0));
 
-        const renderer = new THREE.WebGLRenderer({ 
+        const renderer = new THREE.WebGLRenderer({
             canvas: canvasRef,
             antialias: true,
             alpha: true
         });
-        renderer.setSize(canvasRef.clientWidth, canvasRef.clientHeight);
-        (renderer as any).xr.enabeled = true;
 
         (document.body.appendChild(ARButton.createButton(renderer) as any));
 
-        const geometry = new THREE.BoxGeometry();
+        const geometry = new THREE.BoxGeometry(1, 1, 1);
         const material = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
         const cube = new THREE.Mesh(geometry, material);
+        cube.position.set(0, 0, -3);
         scene.add(cube);
+
+        let resizeCallback = () => {
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+        };
+
+        renderer.setSize(window.innerWidth - 200, window.innerHeight -200);
+        renderer.setPixelRatio(window.devicePixelRatio);
+        renderer.render(scene, camera);
+        (renderer as any).xr.enabled = true;
 
         const animate = () => {
             requestAnimationFrame(animate);

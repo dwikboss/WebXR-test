@@ -1,7 +1,6 @@
 <template>
   <div class="page home">
     <div class="full-width">
-      <h1>Mixed Reality</h1>
       <ModelComponent />
     </div>
   </div>
