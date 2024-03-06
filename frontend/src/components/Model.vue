@@ -28,9 +28,9 @@ export default defineComponent({
             alpha: true
         });
         renderer.setSize(canvasRef.clientWidth, canvasRef.clientHeight);
-        renderer.xr.enabeled = true;
+        (renderer as any).xr.enabeled = true;
 
-        document.body.appendChild(ARButton.createButton(renderer));
+        (document.body.appendChild(ARButton.createButton(renderer) as any));
 
         const geometry = new THREE.BoxGeometry();
         const material = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
