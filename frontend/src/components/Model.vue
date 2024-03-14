@@ -20,15 +20,15 @@ export default defineComponent({
         }
     },
     mounted() {
-        let reticle;
-        let renderer;
-        let controls;
-        let hitTestSource = null;
-        let hitTestSourceRequested = false;
+        let reticle: THREE.Mesh;
+        let renderer: THREE.WebGLRenderer;
+        let controls: OrbitControls;
+        let hitTestSource: any = null;
+        let hitTestSourceRequested: boolean = false;
 
-        const scene = new THREE.Scene();
-        const canvasRef = this.$refs.canvasRef;
-        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 100);
+        const scene: THREE.Scene = new THREE.Scene();
+        const canvasRef: HTMLCanvasElement = this.$refs.canvasRef;
+        const camera: THREE.PerspectiveCamera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 100);
 
         camera.position.y = 0;
         camera.position.z = 2;
@@ -112,33 +112,33 @@ export default defineComponent({
 
         function placePainting() {
             if (reticle.visible) {
-                const textureLoader = new THREE.TextureLoader();
-                const texture = textureLoader.load('/images/ivewave.jpg');
+                const textureLoader: THREE.TextureLoader = new THREE.TextureLoader();
+                const texture: THREE.Texture = textureLoader.load('/images/ivewave.jpg');
 
-                const geometry = new THREE.PlaneGeometry(1, 0.5);
-                const material = new THREE.MeshBasicMaterial({ map: texture });
+                const geometry: THREE.PlaneGeometry = new THREE.PlaneGeometry(1, 0.5);
+                const material: THREE.MeshBasicMaterial = new THREE.MeshBasicMaterial({ map: texture });
 
-                const painting = new THREE.Mesh(geometry, material);
+                const painting: THREE.Mesh = new THREE.Mesh(geometry, material);
                 painting.position.setFromMatrixPosition(reticle.matrix);
-                this.imageCounter++;
                 scene.add(painting);
-                // if (this.imageCounter == 0) {
-
-                // } else if (this.imageCounter == 1) {
-                //     const textureLoader = new THREE.TextureLoader();
-                //     const texture = textureLoader.load('/images/ivegroup.jpg');
-
-                //     const geometry = new THREE.PlaneGeometry(0.6, 1);
-                //     const material = new THREE.MeshBasicMaterial({ map: texture });
-
-                //     const painting = new THREE.Mesh(geometry, material);
-                //     painting.position.setFromMatrixPosition(reticle.matrix);
-                //     this.imageCounter++;
-                //     scene.add(painting);
-                // }
             }
-            // console.log(this.imageCounter);
         }
+        // if (this.imageCounter == 0) {
+
+        // } else if (this.imageCounter == 1) {
+        //     const textureLoader = new THREE.TextureLoader();
+        //     const texture = textureLoader.load('/images/ivegroup.jpg');
+
+        //     const geometry = new THREE.PlaneGeometry(0.6, 1);
+        //     const material = new THREE.MeshBasicMaterial({ map: texture });
+
+        //     const painting = new THREE.Mesh(geometry, material);
+        //     painting.position.setFromMatrixPosition(reticle.matrix);
+        //     this.imageCounter++;
+        //     scene.add(painting);
+        // }
+        // console.log(this.imageCounter);
+        
 
         let controller = renderer.xr.getController(0);
         controller.addEventListener("select", placePainting);
