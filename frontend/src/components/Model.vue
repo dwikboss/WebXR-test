@@ -59,7 +59,6 @@ export default defineComponent({
                         });
                     }
 
-
                     hitTestSourceRequested = true;
 
                     session.addEventListener("end", () => {
@@ -71,15 +70,14 @@ export default defineComponent({
                 if (hitTestSource) {
                     const hitTestResults: XRHitTestResult[] = frame.getHitTestResults(hitTestSource);
                     if (hitTestResults.length > 0) {
-                        const hit: XRHitTestResult = hitTestResults[0];
+                        let hit: XRHitTestResult = hitTestResults[0];
                         reticle.visible = true;
-                        if (referenceSpace) {
-                            reticle.matrix.fromArray(hit.getPose(referenceSpace.transform.matrix)!);
-                        }
+                        reticle.matrix.fromArray(hit.getPose(referenceSpace).transform.matrix);
                     } else {
                         reticle.visible = false;
                     }
                 }
+
             }
             controls.update();
             renderer.render(scene, camera);
@@ -117,6 +115,7 @@ export default defineComponent({
 
         function placePainting() {
             if (reticle.visible) {
+                console.log(reticle.matrix);
                 const textureLoader: THREE.TextureLoader = new THREE.TextureLoader();
                 const texture: THREE.Texture = textureLoader.load('/images/ivewave.jpg');
 
