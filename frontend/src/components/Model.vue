@@ -30,7 +30,7 @@ export default defineComponent({
         const canvasRef: HTMLCanvasElement | null = this.$refs.canvasRef as HTMLCanvasElement;
         const camera: THREE.PerspectiveCamera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 100);
 
-        camera.position.y = 0;
+        camera.position.y = 1;
         camera.position.z = 2;
         camera.lookAt(new THREE.Vector3(0, 0, 0));
         scene.add(camera);
