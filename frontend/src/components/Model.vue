@@ -52,9 +52,7 @@ export default defineComponent({
                     if (session) {
                         session.requestReferenceSpace("viewer").then((referenceSpace: XRReferenceSpace) => {
                             session?.requestHitTestSource({ space: referenceSpace! })?.then((source: XRHitTestSource) => {
-                                if (source) {
-                                    hitTestSource = source;
-                                }
+                                hitTestSource = source;
                             });
                         });
                     }
@@ -70,12 +68,15 @@ export default defineComponent({
                 if (hitTestSource) {
                     const hitTestResults: XRHitTestResult[] = frame.getHitTestResults(hitTestSource);
                     if (hitTestResults.length > 0) {
-                        let hit: XRHitTestResult = hitTestResults[0];
+                        const hit = hitTestResults[0];
+                        const pose = hit?.getPose(referenceSpace!);
+                        const matrixArray = pose?.transform.matrix ?? [];
                         reticle.visible = true;
-                        reticle.matrix.fromArray(hit?.getPose(referenceSpace!)?.transform.matrix);
+                        reticle.matrix.fromArray(matrixArray);
                     } else {
                         reticle.visible = false;
                     }
+
                 }
 
             }
