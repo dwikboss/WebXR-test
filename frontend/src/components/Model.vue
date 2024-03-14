@@ -57,11 +57,11 @@ export default defineComponent({
                         });
                     }
 
-                    hitTestSourceRequested = true;
+                    hitTestSourceRequested! = true;
 
-                    session.addEventListener("end", () => {
-                        hitTestSourceRequested = false;
-                        hitTestSource = null;
+                    session!.addEventListener("end", () => {
+                        hitTestSourceRequested! = false;
+                        hitTestSource! = null;
                     });
                 }
 
@@ -125,6 +125,7 @@ export default defineComponent({
 
                 const painting: THREE.Mesh = new THREE.Mesh(geometry, material);
                 painting.position.setFromMatrixPosition(reticle.matrix);
+                painting.scale.set(5,5,5);
                 scene.add(painting);
             }
         }
