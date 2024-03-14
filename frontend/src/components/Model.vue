@@ -41,7 +41,7 @@ export default defineComponent({
         let controller = renderer.xr.getController(0);
         controller.addEventListener("select", onSelect);
         console.log(controller);
-
+        placePainting();
         function onSelect() {
             placePainting();
         }
