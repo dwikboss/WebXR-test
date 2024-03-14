@@ -10,7 +10,6 @@
 import { defineComponent } from 'vue';
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 import { ARButton } from "three/examples/jsm/webxr/ARButton";
-import { VRButton } from "three/examples/jsm/webxr/VRButton";
 import * as THREE from 'three';
 
 export default defineComponent({
@@ -30,9 +29,9 @@ export default defineComponent({
             alpha: true
         }) as any;
 
-        const vrButton = VRButton.createButton(renderer) as any;
-        document.body.appendChild(vrButton);
-        const session = renderer.xr.setSession('immersive-vr', {
+        const arButton = ARButton.createButton(renderer) as any;
+        document.body.appendChild(arButton);
+        const session = renderer.xr.setSession('immersive-ar', {
             requiredFeatures: ['hit-test']
         });
 
@@ -40,12 +39,13 @@ export default defineComponent({
         const intersection = new THREE.Vector3();
 
         let controller = renderer.xr.getController(0);
-        controller.addEventListener("select", onSelect);
-        console.log(controller);
+        // controller.addEventListener("select", onSelect);
+        // console.log(controller);
+        
         placePainting();
-        function onSelect() {
-            placePainting();
-        }
+        // function onSelect() {
+        //     placePainting();
+        // }
 
         function placePainting() {
             const textureLoader = new THREE.TextureLoader();
