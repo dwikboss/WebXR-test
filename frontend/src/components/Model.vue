@@ -58,11 +58,6 @@ export default defineComponent({
                     }
 
                     hitTestSourceRequested! = true;
-
-                    session!.addEventListener("end", () => {
-                        hitTestSourceRequested! = false;
-                        hitTestSource! = null;
-                    });
                 }
 
                 if (hitTestSource) {
