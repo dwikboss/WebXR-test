@@ -48,33 +48,34 @@ export default defineComponent({
                 const referenceSpace: XRSpace | null = renderer.xr.getReferenceSpace();
                 const session: XRSession | null = renderer.xr.getSession();
 
-                if (session) {
-                    if (referenceSpace && session && !hitTestSourceRequested) {
+                if (referenceSpace && session && !hitTestSourceRequested) {
+                    if (session) {
                         session.requestReferenceSpace("viewer").then((referenceSpace: XRReferenceSpace) => {
-                            session.requestHitTestSource({ space: referenceSpace })
-                                .then((source: XRHitTestSource) => {
+                            session?.requestHitTestSource({ space: referenceSpace })?.then((source: XRHitTestSource) => {
+                                if (source) {
                                     hitTestSource = source;
-                                });
-                        });
-
-                        hitTestSourceRequested = true;
-
-                        session.addEventListener("end", () => {
-                            hitTestSourceRequested = false;
-                            hitTestSource = null;
+                                }
+                            });
                         });
                     }
+
+
+                    hitTestSourceRequested = true;
+
+                    session.addEventListener("end", () => {
+                        hitTestSourceRequested = false;
+                        hitTestSource = null;
+                    });
                 }
 
                 if (hitTestSource) {
                     const hitTestResults: XRHitTestResult[] = frame.getHitTestResults(hitTestSource);
                     if (hitTestResults.length > 0) {
-                        let hit: XRHitTestResult;
-                        if (hitTestResults) {
-                            hit = hitTestResults[0];
-                        }
+                        const hit: XRHitTestResult = hitTestResults[0];
                         reticle.visible = true;
-                        reticle.matrix.fromArray(hit.getPose(referenceSpace).transform.matrix);
+                        if (referenceSpace) {
+                            reticle.matrix.fromArray(hit.getPose(referenceSpace.transform.matrix)!);
+                        }
                     } else {
                         reticle.visible = false;
                     }
