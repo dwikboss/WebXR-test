@@ -22,12 +22,12 @@ export default defineComponent({
     mounted() {
         let reticle: THREE.Mesh;
         let renderer: THREE.WebGLRenderer;
-        let controls: OrbitControls;
+        let controls: THREE.OrbitControls;
         let hitTestSource: XRHitTestSource | null = null;
         let hitTestSourceRequested: boolean = false;
 
         const scene: THREE.Scene = new THREE.Scene();
-        const canvasRef: HTMLCanvasElement = this.$refs.canvasRef as HTMLCanvasElement;
+        const canvasRef: HTMLCanvasElement | null = this.$refs.canvasRef as HTMLCanvasElement;
         const camera: THREE.PerspectiveCamera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 100);
 
         camera.position.y = 0;
@@ -45,29 +45,34 @@ export default defineComponent({
 
         let loop = (timestamp: number, frame?: XRFrame) => {
             if (frame) {
-                const referenceSpace: XRReferenceSpace | null = renderer.xr.getReferenceSpace();
+                const referenceSpace: XRSpace | null = renderer.xr.getReferenceSpace();
                 const session: XRSession | null = renderer.xr.getSession();
 
-                if (referenceSpace && session && !hitTestSourceRequested) {
-                    session.requestReferenceSpace("viewer").then((referenceSpace: XRReferenceSpace) => {
-                        session.requestHitTestSource({ space: referenceSpace })
-                            .then((source: XRHitTestSource) => {
-                                hitTestSource = source;
-                            });
-                    });
+                if (session) {
+                    if (referenceSpace && session && !hitTestSourceRequested) {
+                        session.requestReferenceSpace("viewer").then((referenceSpace: XRReferenceSpace) => {
+                            session.requestHitTestSource({ space: referenceSpace })
+                                .then((source: XRHitTestSource) => {
+                                    hitTestSource = source;
+                                });
+                        });
 
-                    hitTestSourceRequested = true;
+                        hitTestSourceRequested = true;
 
-                    session.addEventListener("end", () => {
-                        hitTestSourceRequested = false;
-                        hitTestSource = null;
-                    });
+                        session.addEventListener("end", () => {
+                            hitTestSourceRequested = false;
+                            hitTestSource = null;
+                        });
+                    }
                 }
 
                 if (hitTestSource) {
                     const hitTestResults: XRHitTestResult[] = frame.getHitTestResults(hitTestSource);
                     if (hitTestResults.length > 0) {
-                        const hit: XRHitTestResult = hitTestResults[0];
+                        let hit: XRHitTestResult;
+                        if (hitTestResults) {
+                            hit = hitTestResults[0];
+                        }
                         reticle.visible = true;
                         reticle.matrix.fromArray(hit.getPose(referenceSpace).transform.matrix);
                     } else {
