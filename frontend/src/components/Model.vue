@@ -43,34 +43,34 @@ export default defineComponent({
         reticle.visible = false;
         scene.add(reticle);
 
-        let loop = (timestamp, frame) => {
+        let loop = (timestamp: number, frame: XRFrame) => {
             if (frame) {
-                const referenceSpace = renderer.xr.getReferenceSpace();
-                let session = renderer.xr.getSession();
+                const referenceSpace: XRReferenceSpace | null = renderer.xr.getReferenceSpace();
+                let session: XRSession | null = renderer.xr.getSession();
 
-                if (hitTestSourceRequested === false) {
-                    session.requestReferenceSpace("viewer").then((referenceSpace) => {
+                if (referenceSpace && session && hitTestSourceRequested === false) {
+                    session.requestReferenceSpace("viewer").then((referenceSpace: XRReferenceSpace) => {
                         session
-                            .requestHitTestSource({ space: referenceSpace })
-                            .then((source) => {
+                            ?.requestHitTestSource({ space: referenceSpace })
+                            .then((source: XRHitTestSource) => {
                                 hitTestSource = source;
                             });
                     });
 
                     hitTestSourceRequested = true;
 
-                    session.addEventListener("end", () => {
+                    session?.addEventListener("end", () => {
                         hitTestSourceRequested = false;
                         hitTestSource = null;
                     });
                 }
 
                 if (hitTestSource) {
-                    const hitTestResults = frame.getHitTestResults(hitTestSource);
+                    const hitTestResults: XRHitTestResult[] = frame.getHitTestResults(hitTestSource);
                     if (hitTestResults.length > 0) {
-                        const hit = hitTestResults[0];
+                        const hit: XRHitTestResult = hitTestResults[0];
                         reticle.visible = true;
-                        reticle.matrix.fromArray(hit.getPose(referenceSpace).transform.matrix);
+                        reticle.matrix.fromArray(hit.getPose(referenceSpace!).transform.matrix);
                     } else {
                         reticle.visible = false;
                     }
@@ -79,6 +79,7 @@ export default defineComponent({
             controls.update();
             renderer.render(scene, camera);
         };
+
 
         let resizeCallback = () => {
             renderer.setSize(window.innerWidth, window.innerHeight);
@@ -138,7 +139,7 @@ export default defineComponent({
         //     scene.add(painting);
         // }
         // console.log(this.imageCounter);
-        
+
 
         let controller = renderer.xr.getController(0);
         controller.addEventListener("select", placePainting);
