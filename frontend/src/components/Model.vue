@@ -23,7 +23,7 @@ export default defineComponent({
         let reticle: THREE.Mesh;
         let renderer: THREE.WebGLRenderer;
         let controls: OrbitControls;
-        let hitTestSource: any = null;
+        let hitTestSource: XRHitTestSource | null = null;
         let hitTestSourceRequested: boolean = false;
 
         const scene: THREE.Scene = new THREE.Scene();
@@ -43,24 +43,22 @@ export default defineComponent({
         reticle.visible = false;
         scene.add(reticle);
 
-        let loop = (timestamp: number, frame: XRFrame) => {
+        let loop = (timestamp: number, frame?: XRFrame) => {
             if (frame) {
                 const referenceSpace: XRReferenceSpace | null = renderer.xr.getReferenceSpace();
-                let session: XRSession | null = renderer.xr.getSession();
+                const session: XRSession | null = renderer.xr.getSession();
 
-                if (referenceSpace && session && hitTestSourceRequested === false) {
-                    if (session) {
-                        session.requestReferenceSpace("viewer").then((referenceSpace: XRReferenceSpace) => {
-                            session?.requestHitTestSource({ space: referenceSpace })
-                                ?.then((source: XRHitTestSource) => {
-                                    hitTestSource = source;
-                                });
-                        });
-                    }
+                if (referenceSpace && session && !hitTestSourceRequested) {
+                    session.requestReferenceSpace("viewer").then((referenceSpace: XRReferenceSpace) => {
+                        session.requestHitTestSource({ space: referenceSpace })
+                            .then((source: XRHitTestSource) => {
+                                hitTestSource = source;
+                            });
+                    });
 
                     hitTestSourceRequested = true;
 
-                    session?.addEventListener("end", () => {
+                    session.addEventListener("end", () => {
                         hitTestSourceRequested = false;
                         hitTestSource = null;
                     });
@@ -71,7 +69,7 @@ export default defineComponent({
                     if (hitTestResults.length > 0) {
                         const hit: XRHitTestResult = hitTestResults[0];
                         reticle.visible = true;
-                        reticle.matrix.fromArray(hit.getPose(referenceSpace?.transform.matrix)!);
+                        reticle.matrix.fromArray(hit.getPose(referenceSpace).transform.matrix);
                     } else {
                         reticle.visible = false;
                     }
@@ -81,7 +79,6 @@ export default defineComponent({
             renderer.render(scene, camera);
         };
 
-
         let resizeCallback = () => {
             renderer.setSize(window.innerWidth, window.innerHeight);
 
@@ -90,7 +87,7 @@ export default defineComponent({
         };
 
         renderer = new THREE.WebGLRenderer({
-            canvas: canvasRef as HTMLCanvasElement,
+            canvas: canvasRef,
             antialias: true,
             alpha: true
         });
@@ -101,7 +98,7 @@ export default defineComponent({
         renderer.setAnimationLoop(loop);
 
         document.body.appendChild(
-            ARButton.createButton(renderer as any, {
+            ARButton.createButton(renderer, {
                 requiredFeatures: ["hit-test"],
             })
         );
@@ -125,22 +122,6 @@ export default defineComponent({
                 scene.add(painting);
             }
         }
-        // if (this.imageCounter == 0) {
-
-        // } else if (this.imageCounter == 1) {
-        //     const textureLoader = new THREE.TextureLoader();
-        //     const texture = textureLoader.load('/images/ivegroup.jpg');
-
-        //     const geometry = new THREE.PlaneGeometry(0.6, 1);
-        //     const material = new THREE.MeshBasicMaterial({ map: texture });
-
-        //     const painting = new THREE.Mesh(geometry, material);
-        //     painting.position.setFromMatrixPosition(reticle.matrix);
-        //     this.imageCounter++;
-        //     scene.add(painting);
-        // }
-        // console.log(this.imageCounter);
-
 
         let controller = renderer.xr.getController(0);
         controller.addEventListener("select", placePainting);
