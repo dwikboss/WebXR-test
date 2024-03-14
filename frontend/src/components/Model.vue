@@ -48,7 +48,7 @@ export default defineComponent({
                 const referenceSpace: any = renderer.xr.getReferenceSpace();
                 const session: XRSession | null = renderer.xr.getSession();
 
-                if (referenceSpace && session && !hitTestSourceRequested) {
+                if (hitTestSourceRequested === false) {
                     if (session) {
                         session.requestReferenceSpace("viewer").then((referenceSpace: XRReferenceSpace) => {
                             session?.requestHitTestSource({ space: referenceSpace! })?.then((source: XRHitTestSource) => {
