@@ -22,7 +22,7 @@ export default defineComponent({
     mounted() {
         let reticle: THREE.Mesh;
         let renderer: THREE.WebGLRenderer;
-        let controls: THREE.OrbitControls;
+        let controls: any;
         let hitTestSource: XRHitTestSource | null = null;
         let hitTestSourceRequested: boolean = false;
 
@@ -45,7 +45,7 @@ export default defineComponent({
 
         let loop = (timestamp: number, frame?: XRFrame) => {
             if (frame) {
-                const referenceSpace: XRSpace | null = renderer.xr.getReferenceSpace();
+                const referenceSpace: any = renderer.xr.getReferenceSpace();
                 const session: XRSession | null = renderer.xr.getSession();
 
                 if (referenceSpace && session && !hitTestSourceRequested) {
