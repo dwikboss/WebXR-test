@@ -39,14 +39,12 @@ export default defineComponent({
         const intersection = new THREE.Vector3();
 
         let controller = renderer.xr.getController(0);
-        // controller.addEventListener("select", onSelect);
-        // console.log(controller);
-        
-        placePainting();
-        // function onSelect() {
-        //     placePainting();
-        // }
+        controller.addEventListener("select", onSelect);
+        console.log(controller);
 
+        function onSelect() {
+            placePainting();
+        }
         function placePainting() {
             const textureLoader = new THREE.TextureLoader();
             const texture = textureLoader.load('/images/ivewave.jpg');
