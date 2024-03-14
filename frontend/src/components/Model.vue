@@ -49,7 +49,7 @@ export default defineComponent({
 
         function placePainting() {
             const textureLoader = new THREE.TextureLoader();
-            const texture = textureLoader.load('./src/assets/images/scenes/ivewave.jpg');
+            const texture = textureLoader.load('/assets/images/scenes/ivewave.jpg');
 
             const geometry = new THREE.PlaneGeometry(1, 0.5);
             const material = new THREE.MeshBasicMaterial({ map: texture });
