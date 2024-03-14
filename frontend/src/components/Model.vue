@@ -49,14 +49,11 @@ export default defineComponent({
                 const session: XRSession | null = renderer.xr.getSession();
 
                 if (hitTestSourceRequested === false) {
-                    if (session) {
-                        session.requestReferenceSpace("viewer").then((referenceSpace: XRReferenceSpace) => {
-                            session!.requestHitTestSource({ space: referenceSpace! })?.then((source: XRHitTestSource) => {
-                                if (source) {
-                                    hitTestSource = source;
-                                }
-                            });
-
+                    if (session && referenceSpace) {
+                        session.requestHitTestSource({ space: referenceSpace }).then((source: XRHitTestSource | undefined) => {
+                            if (source) {
+                                hitTestSource = source;
+                            }
                         });
                     }
 
