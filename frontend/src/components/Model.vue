@@ -72,7 +72,7 @@ export default defineComponent({
                     if (hitTestResults.length > 0) {
                         let hit: XRHitTestResult = hitTestResults[0];
                         reticle.visible = true;
-                        reticle.matrix.fromArray(hit!.getPose(referenceSpace!).transform.matrix);
+                        reticle.matrix.fromArray(hit?.getPose(referenceSpace!)?.transform.matrix);
                     } else {
                         reticle.visible = false;
                     }
