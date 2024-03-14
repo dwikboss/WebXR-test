@@ -51,7 +51,7 @@ export default defineComponent({
                 if (referenceSpace && session && !hitTestSourceRequested) {
                     if (session) {
                         session.requestReferenceSpace("viewer").then((referenceSpace: XRReferenceSpace) => {
-                            session?.requestHitTestSource({ space: referenceSpace })?.then((source: XRHitTestSource) => {
+                            session?.requestHitTestSource({ space: referenceSpace! })?.then((source: XRHitTestSource) => {
                                 if (source) {
                                     hitTestSource = source;
                                 }
