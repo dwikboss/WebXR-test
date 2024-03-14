@@ -27,7 +27,7 @@ export default defineComponent({
         let hitTestSourceRequested: boolean = false;
 
         const scene: THREE.Scene = new THREE.Scene();
-        const canvasRef: HTMLCanvasElement = this.$refs.canvasRef;
+        const canvasRef: HTMLCanvasElement = this.$refs.canvasRef as HTMLCanvasElement;
         const camera: THREE.PerspectiveCamera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 100);
 
         camera.position.y = 0;
@@ -49,13 +49,14 @@ export default defineComponent({
                 let session: XRSession | null = renderer.xr.getSession();
 
                 if (referenceSpace && session && hitTestSourceRequested === false) {
-                    session.requestReferenceSpace("viewer").then((referenceSpace: XRReferenceSpace) => {
-                        session
-                            ?.requestHitTestSource({ space: referenceSpace })
-                            .then((source: XRHitTestSource) => {
-                                hitTestSource = source;
-                            });
-                    });
+                    if (session) {
+                        session.requestReferenceSpace("viewer").then((referenceSpace: XRReferenceSpace) => {
+                            session?.requestHitTestSource({ space: referenceSpace })
+                                ?.then((source: XRHitTestSource) => {
+                                    hitTestSource = source;
+                                });
+                        });
+                    }
 
                     hitTestSourceRequested = true;
 
@@ -70,7 +71,7 @@ export default defineComponent({
                     if (hitTestResults.length > 0) {
                         const hit: XRHitTestResult = hitTestResults[0];
                         reticle.visible = true;
-                        reticle.matrix.fromArray(hit.getPose(referenceSpace!).transform.matrix);
+                        reticle.matrix.fromArray(hit.getPose(referenceSpace?.transform.matrix)!);
                     } else {
                         reticle.visible = false;
                     }
