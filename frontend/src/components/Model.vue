@@ -51,9 +51,12 @@ export default defineComponent({
                 if (hitTestSourceRequested === false) {
                     if (session) {
                         session.requestReferenceSpace("viewer").then((referenceSpace: XRReferenceSpace) => {
-                            session?.requestHitTestSource({ space: referenceSpace! })?.then((source!: XRHitTestSource) => {
-                                hitTestSource = source;
+                            session?.requestHitTestSource({ space: referenceSpace! })?.then((source: XRHitTestSource) => {
+                                if (source) {
+                                    hitTestSource = source;
+                                }
                             });
+
                         });
                     }
 
@@ -120,7 +123,7 @@ export default defineComponent({
 
                 const painting: THREE.Mesh = new THREE.Mesh(geometry, material);
                 painting.position.setFromMatrixPosition(reticle.matrix);
-                painting.scale.set(5,5,5);
+                painting.scale.set(5, 5, 5);
                 scene.add(painting);
             }
         }
